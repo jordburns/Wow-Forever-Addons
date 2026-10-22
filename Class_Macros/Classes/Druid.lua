@@ -1,0 +1,96 @@
+local _, ns = ...
+
+local CHARACTER, GENERAL = ns.CHARACTER, ns.GENERAL
+local T = ns.MacroText
+
+ns.ClassSets.DRUID = {
+    gearSlots = {},
+    order = { "forms", "bear", "cat", "healing", "balance" },
+    sections = {
+        forms = {
+            title = "Forms",
+            iconSpell = 768,
+            tab = CHARACTER,
+            macros = {
+                { "Bear", "#showtooltip\n/cast !Dire Bear Form\n/cast !Bear Form" },
+                { "Cat", T.Form("Cat Form") },
+                { "Travel", T.Form("Travel Form") },
+                { "Aquatic", T.Form("Aquatic Form") },
+                { "Caster", "#showtooltip\n/cancelform" },
+            },
+        },
+        bear = {
+            title = "Bear Form",
+            iconSpell = 5487,
+            tab = CHARACTER,
+            macros = {
+                { "Maul", T.Melee("Maul") },
+                { "Swipe", "#showtooltip Swipe\n/startattack\n/cast Swipe" },
+                { "Lacerate", T.Melee("Lacerate") },
+                { "Growl", T.OnEnemy("Growl") },
+                { "Bash", T.OnEnemy("Bash") },
+                { "DRoar", T.Plain("Demoralizing Roar") },
+                { "CRoar", T.Plain("Challenging Roar") },
+                { "Enrage", T.Plain("Enrage") },
+                { "FRegen", T.Plain("Frenzied Regeneration") },
+            },
+        },
+        cat = {
+            title = "Cat Form",
+            iconSpell = 5221,
+            tab = CHARACTER,
+            macros = {
+                { "Claw", T.Melee("Claw") },
+                { "Shred", T.Melee("Shred") },
+                { "Rake", T.Melee("Rake") },
+                { "PBite", T.Melee("Primal Bite") },
+                { "Rip", T.Melee("Rip") },
+                { "FBite", T.Melee("Ferocious Bite") },
+                { "Prowl", T.Form("Prowl") },
+                { "Pounce", T.OnEnemy("Pounce") },
+                { "Ravage", T.OnEnemy("Ravage") },
+                { "Cower", T.Plain("Cower") },
+                { "Dash", T.Plain("Dash") },
+            },
+        },
+        healing = {
+            title = "Healing and buffs",
+            iconSpell = 5185,
+            tab = GENERAL,
+            macros = {
+                { "D HTouch", T.OnFriend("Healing Touch") },
+                { "D Rejuv", T.OnFriend("Rejuvenation") },
+                { "D Regrowth", T.OnFriend("Regrowth") },
+                { "D WGrowth", T.OnFriend("Wild Growth") },
+                { "D Tranq", T.Plain("Tranquility") },
+                { "D RCurse", T.OnFriend("Remove Curse") },
+                { "D CPoison", T.OnFriend("Cure Poison") },
+                { "D APoison", T.OnFriend("Abolish Poison") },
+                { "D MotW", T.OnFriend("Mark of the Wild") },
+                { "D GotW", T.OnFriend("Gift of the Wild") },
+                { "D Thorns", T.OnFriend("Thorns") },
+                { "D Innervate", T.OnFriend("Innervate") },
+                { "D Rebirth", T.OnDeadFriend("Rebirth") },
+                { "D Revive", T.OnDeadFriend("Revive") },
+            },
+        },
+        balance = {
+            title = "Balance and control",
+            iconSpell = 5176,
+            tab = GENERAL,
+            macros = {
+                { "D Wrath", T.OnEnemy("Wrath") },
+                { "D Starfire", T.OnEnemy("Starfire") },
+                { "D Moonfire", T.OnEnemy("Moonfire") },
+                { "D ISwarm", T.OnEnemy("Insect Swarm") },
+                { "D FFire", T.OnEnemy("Faerie Fire") },
+                { "D Roots", T.OnEnemy("Entangling Roots") },
+                { "D Hibernate", T.OnEnemy("Hibernate") },
+                { "D Soothe", T.OnEnemy("Soothe Animal") },
+                { "D Hurricane", T.Plain("Hurricane") },
+                { "D Barkskin", T.Plain("Barkskin") },
+                { "D NGrasp", T.Plain("Nature's Grasp") },
+            },
+        },
+    },
+}

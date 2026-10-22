@@ -1,0 +1,96 @@
+local _, ns = ...
+
+local CHARACTER, GENERAL = ns.CHARACTER, ns.GENERAL
+local T = ns.MacroText
+
+ns.ClassSets.PRIEST = {
+    gearSlots = {},
+    order = { "healing", "damage", "control", "buffs", "utility" },
+    sections = {
+        healing = {
+            title = "Healing",
+            iconSpell = 2050,
+            tab = CHARACTER,
+            macros = {
+                { "LHeal", T.OnFriend("Lesser Heal") },
+                { "Heal", T.OnFriend("Heal") },
+                { "GHeal", T.OnFriend("Greater Heal") },
+                { "Flash", T.OnFriend("Flash Heal") },
+                { "Renew", T.OnFriend("Renew") },
+                { "Shield", T.OnFriend("Power Word: Shield") },
+                { "PoM", T.OnFriend("Prayer of Mending") },
+                { "Binding", T.OnFriend("Binding Heal") },
+                { "Penance", T.OnAnyone("Penance") },
+                { "PoH", T.Plain("Prayer of Healing") },
+                { "DPrayer", T.Plain("Desperate Prayer") },
+                { "Dispel", T.OnAnyone("Dispel Magic") },
+                { "ADisease", T.OnFriend("Abolish Disease") },
+            },
+        },
+        damage = {
+            title = "Damage",
+            iconSpell = 585,
+            tab = CHARACTER,
+            macros = {
+                { "Smite", T.OnEnemy("Smite") },
+                { "HFire", T.OnEnemy("Holy Fire") },
+                { "SWP", T.OnEnemy("Shadow Word: Pain") },
+                { "MBlast", T.OnEnemy("Mind Blast") },
+                { "MFlay", T.OnEnemy("Mind Flay") },
+                { "SWD", T.OnEnemy("Shadow Word: Death") },
+                { "DPlague", T.OnEnemy("Devouring Plague") },
+                { "Starshards", T.OnEnemy("Starshards") },
+                { "MBurn", T.OnEnemy("Mana Burn") },
+                { "HNova", T.Plain("Holy Nova") },
+            },
+        },
+        control = {
+            title = "Control and defense",
+            iconSpell = 8122,
+            tab = CHARACTER,
+            macros = {
+                { "Scream", T.Plain("Psychic Scream") },
+                { "Fade", T.Plain("Fade") },
+                { "Chastise", T.OnEnemy("Chastise") },
+                { "Shackle", T.OnEnemy("Shackle Undead") },
+                { "MControl", T.OnEnemy("Mind Control") },
+            },
+        },
+        buffs = {
+            title = "Buffs",
+            iconSpell = 1243,
+            tab = GENERAL,
+            macros = {
+                { "Pr Fort", T.OnFriend("Power Word: Fortitude") },
+                { "Pr PFort", T.OnFriend("Prayer of Fortitude") },
+                { "Pr Spirit", T.OnFriend("Divine Spirit") },
+                { "Pr PSpirit", T.OnFriend("Prayer of Spirit") },
+                { "Pr ShadowP", T.OnFriend("Shadow Protection") },
+                { "Pr PShadowP", T.OnFriend("Prayer of Shadow Protection") },
+                { "Pr FearWard", T.OnFriend("Fear Ward") },
+                { "Pr IFire", T.Plain("Inner Fire") },
+                { "Pr Shadowguard", T.Plain("Shadowguard") },
+                { "Pr Touch", T.Plain("Touch of Weakness") },
+                { "Pr Elune", T.Plain("Elune's Grace") },
+                { "Pr Feedback", T.Plain("Feedback") },
+            },
+        },
+        utility = {
+            title = "Utility",
+            iconSpell = 2006,
+            tab = GENERAL,
+            macros = {
+                { "Pr Rez", T.OnDeadFriend("Resurrection") },
+                { "Pr Levitate", T.OnFriend("Levitate") },
+                { "Pr CDisease", T.OnFriend("Cure Disease") },
+                { "Pr Hex", T.OnEnemy("Hex of Weakness") },
+                { "Pr Soothe", T.OnEnemy("Mind Soothe") },
+                { "Pr Vision", T.OnAnyone("Mind Vision") },
+                { "Pr DSacrifice", T.Plain("Dark Sacrifice") },
+                { "Pr CFlash", T.Plain("Confounding Flash") },
+                { "Pr Contingency", T.Plain("Contingency Plan") },
+                { "Pr DGrace", T.OnFriend("Divine Grace") },
+            },
+        },
+    },
+}

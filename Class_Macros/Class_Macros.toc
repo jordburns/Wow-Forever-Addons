@@ -1,0 +1,26 @@
+## Interface: 16001
+## Title: Class Macros
+## Notes: Makes class macro sets and saves or loads your action bars. Type /classmacros
+## Author: Crypto
+## Version: 1.0.0
+## SavedVariables: ClassMacrosDB, ClassMacrosV2DB
+## SavedVariablesPerCharacter: ClassMacrosCharacterDB, ClassMacrosV2CharacterDB
+
+Migrate.lua
+Data.lua
+Classes/Warrior.lua
+Classes/Paladin.lua
+Classes/Druid.lua
+Classes/Hunter.lua
+Classes/Mage.lua
+Classes/Priest.lua
+Classes/Rogue.lua
+Classes/Shaman.lua
+Classes/Warlock.lua
+Serializer.lua
+Custom.lua
+Macros.lua
+Bars.lua
+UI.lua
+Share.lua
+Editor.lua

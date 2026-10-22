@@ -1,0 +1,106 @@
+local _, ns = ...
+
+local CHARACTER, GENERAL = ns.CHARACTER, ns.GENERAL
+local T = ns.MacroText
+
+ns.ClassSets.SHAMAN = {
+    gearSlots = ns.WEAPON_AND_SHIELD_SLOTS,
+    order = { "spells", "healing", "weapons", "earthfire", "airwater", "utility" },
+    sections = {
+        spells = {
+            title = "Lightning and shocks",
+            iconSpell = 403,
+            tab = CHARACTER,
+            macros = {
+                { "LBolt", T.OnEnemy("Lightning Bolt") },
+                { "CLight", T.OnEnemy("Chain Lightning") },
+                { "LBurst", T.OnEnemy("Lava Burst") },
+                { "EShock", T.OnEnemy("Earth Shock") },
+                { "FlameS", T.OnEnemy("Flame Shock") },
+                { "FrostS", T.OnEnemy("Frost Shock") },
+                { "Purge", T.OnEnemy("Purge") },
+                { "FNova", T.Plain("Fire Nova") },
+            },
+        },
+        healing = {
+            title = "Healing",
+            iconSpell = 331,
+            tab = CHARACTER,
+            macros = {
+                { "HWave", T.OnFriend("Healing Wave") },
+                { "LHW", T.OnFriend("Lesser Healing Wave") },
+                { "CHeal", T.OnFriend("Chain Heal") },
+                { "Riptide", T.OnFriend("Riptide") },
+                { "CPoison", T.OnFriend("Cure Poison") },
+                { "CDisease", T.OnFriend("Cure Disease") },
+            },
+        },
+        weapons = {
+            title = "Weapons, shield and gear",
+            iconSpell = 8017,
+            tab = CHARACTER,
+            macros = {
+                { "Rockbiter", T.Plain("Rockbiter Weapon") },
+                { "Flametongue", T.Plain("Flametongue Weapon") },
+                { "Frostbrand", T.Plain("Frostbrand Weapon") },
+                { "Windfury", T.Plain("Windfury Weapon") },
+                { "LShield", T.Plain("Lightning Shield") },
+                { "GWolf", T.Form("Ghost Wolf") },
+                { "2H", "#showtooltip\n/equipslot 16 <2H>" },
+                { "Shield", "#showtooltip <SHIELD>\n/equipslot 16 <1H>\n/equipslot 17 <SHIELD>" },
+            },
+        },
+        earthfire = {
+            title = "Totem calls, earth and fire totems",
+            iconSpell = 8071,
+            tab = GENERAL,
+            macros = {
+                { "S Elements", T.Plain("Call of the Elements") },
+                { "S Ancestors", T.Plain("Call of the Ancestors") },
+                { "S Spirits", T.Plain("Call of the Spirits") },
+                { "S Recall", T.Plain("Totemic Recall") },
+                { "S Stoneskin", T.Plain("Stoneskin Totem") },
+                { "S StrEarth", T.Plain("Strength of Earth Totem") },
+                { "S Earthbind", T.Plain("Earthbind Totem") },
+                { "S Stoneclaw", T.Plain("Stoneclaw Totem") },
+                { "S Tremor", T.Plain("Tremor Totem") },
+                { "S Searing", T.Plain("Searing Totem") },
+                { "S Magma", T.Plain("Magma Totem") },
+                { "S FlameT", T.Plain("Flametongue Totem") },
+                { "S FrostRes", T.Plain("Frost Resistance Totem") },
+            },
+        },
+        airwater = {
+            title = "Air and water totems",
+            iconSpell = 5394,
+            tab = GENERAL,
+            macros = {
+                { "S WindfuryT", T.Plain("Windfury Totem") },
+                { "S GraceAir", T.Plain("Grace of Air Totem") },
+                { "S Grounding", T.Plain("Grounding Totem") },
+                { "S Windwall", T.Plain("Windwall Totem") },
+                { "S NatureRes", T.Plain("Nature Resistance Totem") },
+                { "S Sentry", T.Plain("Sentry Totem") },
+                { "S HStream", T.Plain("Healing Stream Totem") },
+                { "S MSpring", T.Plain("Mana Spring Totem") },
+                { "S MTide", T.Plain("Mana Tide Totem") },
+                { "S PoisonT", T.Plain("Poison Cleansing Totem") },
+                { "S DiseaseT", T.Plain("Disease Cleansing Totem") },
+                { "S FireRes", T.Plain("Fire Resistance Totem") },
+            },
+        },
+        utility = {
+            title = "Utility",
+            iconSpell = 2008,
+            tab = GENERAL,
+            macros = {
+                { "S Rez", T.OnDeadFriend("Ancestral Spirit") },
+                { "S WWalk", T.OnFriend("Water Walking") },
+                { "S WBreath", T.OnFriend("Water Breathing") },
+                { "S FarSight", T.Plain("Far Sight") },
+                { "S Astral", T.Plain("Astral Recall") },
+                { "S Projection", T.Plain("Totemic Projection") },
+            },
+        },
+    },
+}
