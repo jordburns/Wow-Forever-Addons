@@ -42,3 +42,7 @@ The `dist` folder is not in git.
 ## Versions
 
 The version in the `.toc` has the form `major.minor.patch`. The release script reads it from the `## Version:` line.
+
+### Make a logo
+
+See [art/README.md](art/README.md).

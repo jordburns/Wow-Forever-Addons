@@ -1,4 +1,4 @@
-local _, ns = ...
+local addonName, ns = ...
 
 local ROW_HEIGHT = 46
 local FIRST_ROW_Y = -64
@@ -699,5 +699,7 @@ end
 local welcomeFrame = CreateFrame("Frame")
 welcomeFrame:RegisterEvent("PLAYER_LOGIN")
 welcomeFrame:SetScript("OnEvent", function()
-    print("|cff66ccffClass Macros|r by Crypto. Type |cffffcc00/classmacros|r to open it.")
+    local getMetadata = (C_AddOns and C_AddOns.GetAddOnMetadata) or GetAddOnMetadata
+    local version = getMetadata(addonName, "Version") or "?"
+    print(format("|cff66ccffClass Macros|r %s by Crypto. Type |cffffcc00/classmacros|r to open it.", version))
 end)
