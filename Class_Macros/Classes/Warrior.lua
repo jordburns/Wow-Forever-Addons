@@ -8,6 +8,7 @@ ns.ClassSets.WARRIOR = {
     gearSlots = ns.WEAPON_AND_SHIELD_SLOTS,
     order = { "openers", "battle", "defensive", "berserker", "gear", "anystance", "talents" },
     retired = {
+        { "Charge", CHARACTER },
         { "BS", CHARACTER },
         { "W CShout", GENERAL },
         { "W 2H", GENERAL },
@@ -20,7 +21,6 @@ ns.ClassSets.WARRIOR = {
             tab = CHARACTER,
             macros = {
                 { "HS Attack", "#showtooltip Heroic Strike\n/startattack\n/cast Heroic Strike" },
-                { "Charge", "#showtooltip [combat] Intercept; Charge\n/cast [nocombat,stance:1] Charge; [combat,stance:3] Intercept; [nocombat] Battle Stance; Berserker Stance" },
                 { "Kick", "#showtooltip [stance:3] Pummel; Shield Bash\n/equipslot [nostance:3,noequipped:Shields] 16 <1H>\n/equipslot [nostance:3,noequipped:Shields] 17 <SHIELD>\n/cast [stance:3] Pummel; Shield Bash" },
                 { "Pull", "#showtooltip\n/cast [equipped:Thrown] Throw; [equipped:Guns] Shoot Gun; [equipped:Crossbows] Shoot Crossbow; Shoot Bow" },
                 { "Shout", "#showtooltip\n/cast Battle Shout" },
@@ -63,6 +63,7 @@ ns.ClassSets.WARRIOR = {
                 { "Reck", "#showtooltip Recklessness\n/cast [stance:3] Recklessness; Berserker Stance" },
                 { "BRage", "#showtooltip Berserker Rage\n/cast [stance:3] Berserker Rage; Berserker Stance" },
                 { "WW", "#showtooltip Whirlwind\n/cast [stance:3] Whirlwind; Berserker Stance" },
+                { "Intercept", "#showtooltip Intercept\n/cast [stance:3] Intercept; Berserker Stance" },
             },
         },
         gear = {

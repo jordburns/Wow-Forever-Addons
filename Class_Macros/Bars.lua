@@ -67,6 +67,65 @@ local function MacroNameInSlot(slot, id, subType)
     return FindMacroShowing(subType, id)
 end
 
+local function SpellNameById(spellId)
+    if C_Spell and C_Spell.GetSpellName then
+        return C_Spell.GetSpellName(spellId)
+    end
+    return GetSpellInfo and (GetSpellInfo(spellId))
+end
+
+local FUTURE_SPELL = Enum and Enum.SpellBookItemType and Enum.SpellBookItemType.FutureSpell
+
+local function EntriesFromNewSpellbook(spellName, found)
+    local bank = (Enum and Enum.SpellBookSpellBank and Enum.SpellBookSpellBank.Player) or 0
+    for line = 1, C_SpellBook.GetNumSpellBookSkillLines() do
+        local lineInfo = C_SpellBook.GetSpellBookSkillLineInfo(line)
+        for index = lineInfo.itemIndexOffset + 1, lineInfo.itemIndexOffset + lineInfo.numSpellBookItems do
+            local itemInfo = C_SpellBook.GetSpellBookItemInfo(index, bank)
+            if itemInfo and itemInfo.name == spellName and not itemInfo.isPassive
+                and (FUTURE_SPELL == nil or itemInfo.itemType ~= FUTURE_SPELL) then
+                tinsert(found, { index = index, bank = bank, spellId = itemInfo.spellID, newApi = true })
+            end
+        end
+    end
+end
+
+local function EntriesFromOldSpellbook(spellName, found)
+    for tab = 1, GetNumSpellTabs() do
+        local _, _, offset, count = GetSpellTabInfo(tab)
+        for index = offset + 1, offset + count do
+            local kind, spellId = GetSpellBookItemInfo(index, "spell")
+            if GetSpellBookItemName(index, "spell") == spellName and kind ~= "FUTURESPELL" then
+                tinsert(found, { index = index, spellId = spellId })
+            end
+        end
+    end
+end
+
+local function KnownSpellbookEntry(spellName)
+    if not spellName then
+        return nil
+    end
+    local found = {}
+    if C_SpellBook and C_SpellBook.GetNumSpellBookSkillLines then
+        pcall(EntriesFromNewSpellbook, spellName, found)
+    end
+    if #found == 0 and GetNumSpellTabs then
+        pcall(EntriesFromOldSpellbook, spellName, found)
+    end
+    return found[#found]
+end
+
+local function PickUpSpellbookEntry(entry)
+    if entry.newApi then
+        C_SpellBook.PickupSpellBookItem(entry.index, entry.bank)
+    elseif PickupSpellBookItem then
+        PickupSpellBookItem(entry.index, "spell")
+    else
+        PickupSpell(entry.index, "spell")
+    end
+end
+
 local function DescribeSlot(slot)
     local actionType, id, subType = GetActionInfo(slot)
     if actionType == "macro" then
@@ -74,8 +133,10 @@ local function DescribeSlot(slot)
         if name then
             return { type = "macro", name = name, tab = MacroTab(name, index) }
         end
-    elseif actionType == "spell" or actionType == "item" then
-        return { type = actionType, id = id }
+    elseif actionType == "spell" then
+        return { type = "spell", id = id, name = SpellNameById(id) }
+    elseif actionType == "item" then
+        return { type = "item", id = id }
     end
 end
 
@@ -89,19 +150,16 @@ local function ItemName(itemId)
     return (GetItemInfo(itemId))
 end
 
-local function SpellName(spellId)
-    if C_Spell and C_Spell.GetSpellName then
-        return C_Spell.GetSpellName(spellId)
-    end
-    return (GetSpellInfo(spellId))
-end
-
 local function SameAction(a, b)
     if not (a and b) or a.type ~= b.type then
         return false
     end
     if a.type == "macro" then
         return a.name == b.name
+    end
+    if a.type == "spell" and a.id ~= b.id then
+        local nameA, nameB = a.name or SpellNameById(a.id), b.name or SpellNameById(b.id)
+        return nameA ~= nil and nameA == nameB
     end
     return a.id == b.id
 end
@@ -121,6 +179,11 @@ local function PickUp(action)
         if IsPlayerSpell(action.id) then
             local pickupSpell = (C_Spell and C_Spell.PickupSpell) or PickupSpell
             pickupSpell(action.id)
+        else
+            local entry = KnownSpellbookEntry(action.name or SpellNameById(action.id))
+            if entry then
+                PickUpSpellbookEntry(entry)
+            end
         end
     elseif action.type == "item" then
         if GetItemCount(action.id) > 0 then
@@ -150,9 +213,18 @@ local function DescribeAction(action)
     if action.type == "macro" then
         return "macro " .. action.name
     elseif action.type == "spell" then
-        return "spell " .. (SpellName(action.id) or tostring(action.id))
+        return "spell " .. (SpellNameById(action.id) or tostring(action.id))
     end
     return "item " .. (ItemName(action.id) or tostring(action.id))
+end
+
+function Bars.DescribeKnownSpell(spellName)
+    local entry = KnownSpellbookEntry(spellName)
+    if not entry then
+        return "not in your spellbook"
+    end
+    return format("spellbook slot %d, spell %s, known by number: %s", entry.index, tostring(entry.spellId),
+        tostring(IsPlayerSpell(entry.spellId)))
 end
 
 function Bars.ListProfiles(classFile)
@@ -253,7 +325,7 @@ function Bars.PrintSlots()
         if actionType then
             local action = DescribeSlot(slot)
             print(format("slot %d: %s %s %s | text %s | saved as %s", slot, tostring(actionType), tostring(id),
-                tostring(subType), tostring(GetActionText(slot)), action and DescribeAction(action) or "NOTHING"))
+                tostring(subType), tostring((GetActionText(slot))), action and DescribeAction(action) or "NOTHING"))
         end
     end
 end

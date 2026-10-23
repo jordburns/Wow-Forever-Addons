@@ -51,12 +51,130 @@ local function WithBuiltInExtras(classFile, sets)
     }
 end
 
+local function BuiltInMacroId(sectionKey, macroName)
+    return sectionKey .. "/" .. macroName
+end
+
+local function FindMacroIndex(section, macroName)
+    for index, macro in ipairs(section.macros) do
+        if macro[1] == macroName then
+            return index
+        end
+    end
+end
+
+local function RecordBuiltIn(sets, builtIn)
+    sets.builtInTexts = {}
+    sets.knownSections = {}
+    for key, section in pairs(builtIn and builtIn.sections or {}) do
+        sets.knownSections[key] = true
+        for _, macro in ipairs(section.macros) do
+            sets.builtInTexts[BuiltInMacroId(key, macro[1])] = macro[2]
+        end
+    end
+end
+
+local function StartTrackingOldCopy(sets, builtIn)
+    sets.builtInTexts = {}
+    sets.knownSections = {}
+    for key, section in pairs(builtIn.sections) do
+        sets.knownSections[key] = true
+        local own = sets.sections[key]
+        for _, macro in ipairs(section.macros) do
+            if own and FindMacroIndex(own, macro[1]) then
+                sets.builtInTexts[BuiltInMacroId(key, macro[1])] = macro[2]
+            end
+        end
+    end
+end
+
+local function AddNewBuiltInSections(sets, builtIn, changes)
+    for _, key in ipairs(builtIn.order) do
+        if not sets.knownSections[key] then
+            sets.knownSections[key] = true
+            if not sets.sections[key] then
+                sets.sections[key] = DeepCopy(builtIn.sections[key])
+                tinsert(sets.order, key)
+                tinsert(changes.added, builtIn.sections[key].title)
+                for _, macro in ipairs(builtIn.sections[key].macros) do
+                    sets.builtInTexts[BuiltInMacroId(key, macro[1])] = macro[2]
+                end
+            end
+        end
+    end
+end
+
+local function ApplyBuiltInMacroChanges(sets, builtIn, changes)
+    for key, section in pairs(builtIn.sections) do
+        local own = sets.sections[key]
+        for _, macro in ipairs(section.macros) do
+            local id = BuiltInMacroId(key, macro[1])
+            local recorded = sets.builtInTexts[id]
+            local index = own and FindMacroIndex(own, macro[1])
+            if recorded == nil then
+                if own and not index then
+                    tinsert(own.macros, { macro[1], macro[2] })
+                    tinsert(changes.added, macro[1])
+                end
+            elseif recorded ~= macro[2] and index and own.macros[index][2] == recorded then
+                own.macros[index][2] = macro[2]
+                tinsert(changes.updated, macro[1])
+            end
+            sets.builtInTexts[id] = macro[2]
+        end
+    end
+end
+
+local function RemoveDroppedBuiltInMacros(sets, builtIn, changes)
+    for id, recorded in pairs(sets.builtInTexts) do
+        local key, name = id:match("^(.-)/(.*)$")
+        local builtInSection = builtIn.sections[key]
+        if not (builtInSection and FindMacroIndex(builtInSection, name)) then
+            local own = sets.sections[key]
+            local index = own and FindMacroIndex(own, name)
+            if index and own.macros[index][2] == recorded then
+                tremove(own.macros, index)
+                tinsert(changes.removed, name)
+            end
+            sets.builtInTexts[id] = nil
+        end
+    end
+end
+
+local function SyncWithBuiltIn(classFile, sets)
+    local builtIn = ns.ClassSets[classFile]
+    if not builtIn then
+        return
+    end
+    if not sets.builtInTexts then
+        StartTrackingOldCopy(sets, builtIn)
+    end
+    local changes = { added = {}, updated = {}, removed = {} }
+    AddNewBuiltInSections(sets, builtIn, changes)
+    ApplyBuiltInMacroChanges(sets, builtIn, changes)
+    RemoveDroppedBuiltInMacros(sets, builtIn, changes)
+    local messages = {
+        added = "Class Macros: new built-in macros added to your own sets: %s. Click Make to create them.",
+        updated = "Class Macros: built-in macros updated in your own sets: %s. Click Make to update /macro.",
+        removed = "Class Macros: built-in macros removed from your own sets: %s. Delete them in /macro if you do not need them.",
+    }
+    for _, kind in ipairs({ "added", "updated", "removed" }) do
+        if #changes[kind] > 0 then
+            print(format(messages[kind], table.concat(changes[kind], ", ")))
+        end
+    end
+end
+
+local syncedThisSession = {}
+
 local function BuiltInCopy(classFile)
     local builtIn = ns.ClassSets[classFile]
-    return {
+    local copy = {
         order = DeepCopy(builtIn and builtIn.order or {}),
         sections = DeepCopy(builtIn and builtIn.sections or {}),
     }
+    RecordBuiltIn(copy, builtIn)
+    return copy
 end
 
 function Custom.IsCustomized(classFile)
@@ -70,6 +188,10 @@ end
 function Custom.GetSet(classFile)
     local own = OwnSets(classFile)
     if own then
+        if not syncedThisSession[classFile] then
+            syncedThisSession[classFile] = true
+            SyncWithBuiltIn(classFile, own)
+        end
         return WithBuiltInExtras(classFile, own)
     end
     return ns.ClassSets[classFile]
@@ -121,7 +243,12 @@ function Custom.CopyFrom(classFile, sets)
         order = DeepCopy(sets.order),
         sections = DeepCopy(sets.sections),
         gearSlots = DeepCopy(sets.gearSlots),
+        builtInTexts = DeepCopy(sets.builtInTexts),
+        knownSections = DeepCopy(sets.knownSections),
     }
+    if not copy.builtInTexts then
+        RecordBuiltIn(copy, ns.ClassSets[classFile])
+    end
     Database().characterSets[CharacterKey()] = copy
 end
 

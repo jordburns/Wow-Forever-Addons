@@ -153,6 +153,7 @@ Importing never runs code. But a macro can contain `/run` code. Class Macros war
 ## Good to know
 
 - Nothing changes while you are in combat.
+- Warrior: there is no Charge macro. With the Vanguard talent, Charge is a different spell, and only the spellbook version works in Defensive Stance. Drag Charge from your spellbook onto your bar.
 - Every delete and every load asks for a confirmation first.
 - Macros that you made yourself with other names are never changed.
 - The General tab holds 120 macros for your whole account. If you play many classes, make only the General sets that you need.

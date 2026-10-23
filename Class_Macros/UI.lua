@@ -693,6 +693,11 @@ SlashCmdList.CLASSMACROS = function(argument)
         ns.Bars.PrintSlots()
         return
     end
+    local spellName = strtrim(argument or ""):match("^spell%s+(.+)$")
+    if spellName then
+        print(format("Class Macros: %s: %s", spellName, ns.Bars.DescribeKnownSpell(spellName)))
+        return
+    end
     ToggleMainFrame()
 end
 

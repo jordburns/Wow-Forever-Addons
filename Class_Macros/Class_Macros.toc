@@ -2,7 +2,7 @@
 ## Title: Class Macros
 ## Notes: Makes class macro sets and saves or loads your action bars. Type /classmacros
 ## Author: Crypto
-## Version: 1.0.0
+## Version: 1.0.1
 ## SavedVariables: ClassMacrosDB, ClassMacrosV2DB
 ## SavedVariablesPerCharacter: ClassMacrosCharacterDB, ClassMacrosV2CharacterDB
 
